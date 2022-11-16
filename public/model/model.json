@@ -93,7 +93,7 @@
                                                 ]
                                             },
                                             {
-                                                "class_name": "Normalization",
+                                                "class_name": "LayerNormalization",
                                                 "config": {
                                                     "name": "normalization_3",
                                                     "trainable": true,
