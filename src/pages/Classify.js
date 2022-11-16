@@ -16,7 +16,7 @@ import 'cropperjs/dist/cropper.css';
 const MODEL_PATH = '/model/model.json';
 const IMAGE_SIZE = 300;
 const CANVAS_SIZE = 300;
-const TOPK_PREDICTIONS = 10;
+const TOPK_PREDICTIONS = 7;
 
 const INDEXEDDB_DB = 'tensorflowjs';
 const INDEXEDDB_STORE = 'model_info_store';
@@ -250,13 +250,10 @@ export default class Classify extends Component {
    * @param topK The number of top predictions to show.
    */
   getTopKClasses = async (values, topK) => {
-    console.log("AAA")
-    console.log(values);
     const valuesAndIndices = [];
     for (let i = 0; i < values.length; i++) {
       valuesAndIndices.push({value: values[i], index: i});
     }
-    console.log(valuesAndIndices);
     valuesAndIndices.sort((a, b) => {
       return b.value - a.value;
     });
