@@ -218,9 +218,7 @@ export default class Classify extends Component {
     const resized = tf.image.resizeBilinear(imageCapture, [IMAGE_SIZE, IMAGE_SIZE]);
     const imageData = await this.processImage(resized);
     const logits = this.model.predict(imageData);
-    console.log(logits);
     const probabilities = await logits.data();
-    console.log(probabilities);
     const preds = await this.getTopKClasses(probabilities, TOPK_PREDICTIONS);
 
     this.setState({
@@ -252,10 +250,13 @@ export default class Classify extends Component {
    * @param topK The number of top predictions to show.
    */
   getTopKClasses = async (values, topK) => {
+    console.log("AAA")
+    console.log(values);
     const valuesAndIndices = [];
     for (let i = 0; i < values.length; i++) {
       valuesAndIndices.push({value: values[i], index: i});
     }
+    console.log(valuesAndIndices);
     valuesAndIndices.sort((a, b) => {
       return b.value - a.value;
     });
@@ -266,7 +267,6 @@ export default class Classify extends Component {
       topkIndices[i] = valuesAndIndices[i].index;
     }
 
-    console.log(valuesAndIndices);
     const topClassesAndProbs = [];
     for (let i = 0; i < topkIndices.length; i++) {
       topClassesAndProbs.push({
