@@ -2,13 +2,11 @@
 // Theses classes should correspond to the softmax output of your model.
 
 export const MODEL_CLASSES = {
-    0: 'rice',
-    1: 'sugar',
-    2: 'coffee',
-    3: 'wheat flour',
-    4: 'beans',
-    5: 'black beans',
-    6: 'milk',
-    7: 'loaf bread',
-    8: 'oil'
+    0: 'Bacilus',
+    1: 'Candida',
+    2: 'E. coli',
+    3: 'Klebsiella',
+    4: 'Pseudomonas',
+    5: 'S. aureus',
+    6: 'Urine',
 };
