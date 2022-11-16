@@ -14,9 +14,9 @@ import 'cropperjs/dist/cropper.css';
 
 
 const MODEL_PATH = '/model/model.json';
-const IMAGE_SIZE = 256;
-const CANVAS_SIZE = 256;
-const TOPK_PREDICTIONS = 7;
+const IMAGE_SIZE = 300;
+const CANVAS_SIZE = 300;
+const TOPK_PREDICTIONS = 10;
 
 const INDEXEDDB_DB = 'tensorflowjs';
 const INDEXEDDB_STORE = 'model_info_store';
@@ -218,7 +218,9 @@ export default class Classify extends Component {
     const resized = tf.image.resizeBilinear(imageCapture, [IMAGE_SIZE, IMAGE_SIZE]);
     const imageData = await this.processImage(resized);
     const logits = this.model.predict(imageData);
+    console.log(logits);
     const probabilities = await logits.data();
+    console.log(probabilities);
     const preds = await this.getTopKClasses(probabilities, TOPK_PREDICTIONS);
 
     this.setState({
@@ -265,14 +267,8 @@ export default class Classify extends Component {
     }
 
     console.log(valuesAndIndices);
-    console.log(MODEL_CLASSES);
-    console.log("AA");
-    console.log(topkIndices);
-    console.log("BB");
     const topClassesAndProbs = [];
     for (let i = 0; i < topkIndices.length; i++) {
-      console.log(topkIndices[i]);
-      console.log(MODEL_CLASSES[topkIndices[i]])
       topClassesAndProbs.push({
         className: MODEL_CLASSES[topkIndices[i]],
         probability: (topkValues[i] * 100).toFixed(2)
