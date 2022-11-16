@@ -16,7 +16,7 @@ import 'cropperjs/dist/cropper.css';
 const MODEL_PATH = '/model/model.json';
 const IMAGE_SIZE = 256;
 const CANVAS_SIZE = 256;
-const TOPK_PREDICTIONS = 5;
+const TOPK_PREDICTIONS = 7;
 
 const INDEXEDDB_DB = 'tensorflowjs';
 const INDEXEDDB_STORE = 'model_info_store';
@@ -264,8 +264,15 @@ export default class Classify extends Component {
       topkIndices[i] = valuesAndIndices[i].index;
     }
 
+    console.log(valuesAndIndices);
+    console.log(MODEL_CLASSES);
+    console.log("AA");
+    console.log(topkIndices);
+    console.log("BB");
     const topClassesAndProbs = [];
     for (let i = 0; i < topkIndices.length; i++) {
+      console.log(topkIndices[i]);
+      console.log(MODEL_CLASSES[topkIndices[i]])
       topClassesAndProbs.push({
         className: MODEL_CLASSES[topkIndices[i]],
         probability: (topkValues[i] * 100).toFixed(2)
