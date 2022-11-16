@@ -52,7 +52,7 @@ export default class Classify extends Component {
   async componentDidMount() {
     if (('indexedDB' in window)) {
       try {
-        this.model = await tf.loadGraphModel('indexeddb://' + INDEXEDDB_KEY);
+        this.model = await tf.loadLayersModel('indexeddb://' + INDEXEDDB_KEY);
 
         // Safe to assume tensorflowjs database and related object store exists.
         // Get the date when the model was saved.
@@ -86,7 +86,7 @@ export default class Classify extends Component {
       catch (error) {
         console.log('Not found in IndexedDB. Loading and saving...');
         console.log(error);
-        this.model = await tf.loadGraphModel(MODEL_PATH);
+        this.model = await tf.loadLayersModel(MODEL_PATH);
         console.log(this.model)
         await this.model.save('indexeddb://' + INDEXEDDB_KEY);
       }
@@ -94,7 +94,7 @@ export default class Classify extends Component {
     // If no IndexedDB, then just download like normal.
     else {
       console.warn('IndexedDB not supported.');
-      this.model = await tf.loadGraphModel(MODEL_PATH);
+      this.model = await tf.loadLayersModel(MODEL_PATH);
     }
 
     this.setState({ modelLoaded: true });
@@ -164,7 +164,7 @@ export default class Classify extends Component {
     // Get the latest model from the server and refresh the one saved in IndexedDB.
     console.log('Updating the model: ' + INDEXEDDB_KEY);
     this.setState({ isDownloadingModel: true });
-    this.model = await tf.loadGraphModel(MODEL_PATH);
+    this.model = await tf.loadLayersModel(MODEL_PATH);
     await this.model.save('indexeddb://' + INDEXEDDB_KEY);
     this.setState({
       isDownloadingModel: false,
