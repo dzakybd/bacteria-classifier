@@ -185,7 +185,7 @@ export default class Classify extends Component {
     // const resizedImage = tf.image.resizeBilinear(imageData, [IMAGE_SIZE, IMAGE_SIZE]);
 
     const image = tf.browser.fromPixels(croppedCanvas, 3 ).cast('float32');
-    image = example.reshape([1, image.shape[0], image.shape[1] ,image.shape[2]]);
+    image = image.reshape([1, image.shape[0], image.shape[1] ,image.shape[2]]);
 
     const logits = this.model.predict(image);
     const probabilities = await logits.data();
@@ -221,7 +221,7 @@ export default class Classify extends Component {
     // const resized = tf.image.resizeBilinear(imageCapture, [IMAGE_SIZE, IMAGE_SIZE]);
     
     const image = tf.browser.fromPixels(imageCapture, 3 ).cast('float32');
-    image = example.reshape([1, image.shape[0], image.shape[1] ,image.shape[2]]);
+    image = image.reshape([1, image.shape[0], image.shape[1] ,image.shape[2]]);
 
     // const imageData = await this.processImage(resized);
 
