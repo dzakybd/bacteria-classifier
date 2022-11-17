@@ -178,11 +178,11 @@ export default class Classify extends Component {
     this.setState({ isClassifying: true });
 
     const croppedCanvas = this.refs.cropper.getCroppedCanvas();
-    const image = tf.tidy( () => tf.browser.fromPixels(croppedCanvas).toFloat());
-
+    const image = tf.tidy( () => tf.browser.fromPixels(croppedCanvas).cast('float32'));
     // Process and resize image before passing in to model.
-    const imageData = await this.processImage(image);
-    // const resizedImage = tf.image.resizeBilinear(imageData, [IMAGE_SIZE, IMAGE_SIZE]);
+    const size = [IMAGE_SIZE, parseInt(IMAGE_SIZE * image.shape[1] / image.shape[0])];
+    const resized = tf.image.resizeBilinear(image, size);
+    const imageData = await this.processImage(resized);
 
     const logits = this.model.predict(imageData);
     const probabilities = await logits.data();
@@ -206,17 +206,17 @@ export default class Classify extends Component {
     // Dispose of tensors we are finished with.
     image.dispose();
     imageData.dispose();
-    // resizedImage.dispose();
+    resized.dispose();
     logits.dispose();
   }
 
   classifyWebcamImage = async () => {
     this.setState({ isClassifying: true });
 
-    const imageCapture = await this.webcam.capture();
-
-    // const resized = tf.image.resizeBilinear(imageCapture, [IMAGE_SIZE, IMAGE_SIZE]);
-    const imageData = await this.processImage(imageCapture);
+    const image = await this.webcam.capture();
+    const size = [IMAGE_SIZE, parseInt(IMAGE_SIZE * image.shape[1] / image.shape[0])];
+    const resized = tf.image.resizeBilinear(image, size);
+    const imageData = await this.processImage(resized);
     const logits = this.model.predict(imageData);
     const probabilities = await logits.data();
     const preds = await this.getTopKClasses(probabilities, TOPK_PREDICTIONS);
@@ -228,13 +228,13 @@ export default class Classify extends Component {
     });
 
     // Draw thumbnail to UI.
-    const tensorData = tf.tidy(() => imageCapture.toFloat().div(255));
+    const tensorData = tf.tidy(() => image.toFloat().div(255));
     await tf.browser.toPixels(tensorData, this.refs.canvas);
 
     // Dispose of tensors we are finished with.
-    // resized.dispose();
-    imageCapture.dispose();
+    image.dispose();
     imageData.dispose();
+    resized.dispose();
     logits.dispose();
     tensorData.dispose();
   }
@@ -250,10 +250,7 @@ export default class Classify extends Component {
    * @param topK The number of top predictions to show.
    */
   getTopKClasses = async (values, topK) => {
-
-    let max_score_id =  values.indexOf(Math.max(...values));
-    console.log(MODEL_CLASSES[max_score_id]);
-
+    // let max_score_id =  values.indexOf(Math.max(...values));
     const valuesAndIndices = [];
     for (let i = 0; i < values.length; i++) {
       valuesAndIndices.push({value: values[i], index: i});
@@ -417,7 +414,7 @@ export default class Classify extends Component {
                         src={this.state.file}
                         style={{height: 400, width: '100%'}}
                         guides={true}
-                        aspectRatio={1 / 1}
+                        // aspectRatio={1 / 1}
                         viewMode={2}
                       />
                     </div>
