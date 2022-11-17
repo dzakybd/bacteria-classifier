@@ -39,7 +39,7 @@
         let prediction = await model.predict(example);
         let class_scores = await prediction.data();
         let max_score_id =  class_scores.indexOf(Math.max(...class_scores));
-        let classes = [  "baciluspng" ,  "candidapng" ,  "ecolipng" ,  "klebpng" ,  "pseudopng" ,  "sauresupng" ,  "Urinepng" ,  ] ;
+        let classes = [  "Bacilus" ,  "Candida" ,  "E coli" ,  "Klebsiella" ,  "Pseudomonas" ,  "S Aureus" ,  "Urine" ,  ] ;
 
         console.log(class_scores);
         document.getElementById("result").innerHTML = classes[max_score_id].toString();
