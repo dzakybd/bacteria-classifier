@@ -16,7 +16,7 @@ import 'cropperjs/dist/cropper.css';
 const MODEL_PATH = '/model/model.json';
 const IMAGE_SIZE = 300;
 const CANVAS_SIZE = 300;
-const TOPK_PREDICTIONS = 7;
+const TOPK_PREDICTIONS = 3;
 
 const INDEXEDDB_DB = 'tensorflowjs';
 const INDEXEDDB_STORE = 'model_info_store';
@@ -180,8 +180,7 @@ export default class Classify extends Component {
     const croppedCanvas = this.refs.cropper.getCroppedCanvas();
     const image = tf.tidy( () => tf.browser.fromPixels(croppedCanvas).cast('float32'));
     // Process and resize image before passing in to model.
-    const size = [IMAGE_SIZE, parseInt(IMAGE_SIZE * image.shape[1] / image.shape[0])];
-    const resized = tf.image.resizeBilinear(image, size);
+    const resized = tf.image.resizeBilinear(image, [IMAGE_SIZE, IMAGE_SIZE]);
     const imageData = await this.processImage(resized);
 
     const logits = this.model.predict(imageData);
@@ -214,8 +213,7 @@ export default class Classify extends Component {
     this.setState({ isClassifying: true });
 
     const image = await this.webcam.capture();
-    const size = [IMAGE_SIZE, parseInt(IMAGE_SIZE * image.shape[1] / image.shape[0])];
-    const resized = tf.image.resizeBilinear(image, size);
+    const resized = tf.image.resizeBilinear(image, [IMAGE_SIZE, IMAGE_SIZE]);
     const imageData = await this.processImage(resized);
     const logits = this.model.predict(imageData);
     const probabilities = await logits.data();
@@ -414,7 +412,7 @@ export default class Classify extends Component {
                         src={this.state.file}
                         style={{height: 400, width: '100%'}}
                         guides={true}
-                        // aspectRatio={1 / 1}
+                        aspectRatio={1 / 1}
                         viewMode={2}
                       />
                     </div>
